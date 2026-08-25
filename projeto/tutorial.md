@@ -34,4 +34,4 @@ O site funcionará da seguinte forma: Após preencher um formulário, o usuário
 
 O código-fonte e os arquivos do projeto estão disponíveis no GitHub:
 
-**[Acessar repositório no GitHub]([cole aqui o link do repositório])**
+**[Acessar repositório no GitHub](https://github.com/mathlori/webmobile-curriculo)**
