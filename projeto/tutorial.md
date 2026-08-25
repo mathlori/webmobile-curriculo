@@ -25,7 +25,7 @@ O site funcionará da seguinte forma: Após preencher um formulário, o usuário
 
 ## 3. Protótipo
 
-
+<img width="1165" height="1600" alt="image" src="https://github.com/user-attachments/assets/2e81b8fb-b72b-43a7-88f3-32df78be8d2b" />
 
 ## 4. Repositório do projeto
 
