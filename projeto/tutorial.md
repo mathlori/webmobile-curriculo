@@ -1,6 +1,9 @@
-<!-- Substitua os campos entre colchetes pelas informações do projeto. -->
-
 # Worclick - Um Clique que impulsiona sua carreira
+
+- Antônio Gustavo de Brito Veloso - 10771499
+- Igor de Jesus Barrabazza Vieira - 10771406
+- Lucas Bergamo Ciciliano - 10771512
+- Matheus de Andrade Lourenço - 10419691
 
 ## 1. Contexto do projeto
 
