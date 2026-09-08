@@ -111,6 +111,16 @@ O `<main>` concentra a parte central da página, que no protótipo representa a 
 
 Essa estrutura faz sentido com o protótipo porque a página principal precisa informar o usuário sobre a ferramenta e, em seguida, permitir que ele insira os dados essenciais para a criação do currículo.
 
+### Perguntas do formulário de currículo
+
+O formulário foi dividido em perguntas para reunir as informações que normalmente aparecem em um currículo. Primeiro, são solicitados os dados pessoais e profissionais, como nome completo, área de atuação, cidade, telefone, e-mail e links do LinkedIn ou GitHub/portfólio.
+
+Depois, o usuário pode escrever um resumo profissional, informando suas áreas de experiência e seus principais interesses. A parte de experiências profissionais pergunta o nome da empresa, o cargo, o período trabalhado e as principais responsabilidades. O botão `Adicionar nova experiência` indica que o currículo poderá receber mais de uma experiência.
+
+Também foram incluídas perguntas sobre a formação acadêmica: curso, instituição, período atual, previsão de conclusão e informações adicionais. Para destacar trabalhos desenvolvidos, o formulário reúne nome do projeto, tecnologias utilizadas e uma breve descrição, com o botão `Adicionar novo projeto` para incluir outros projetos. Por fim, há campos para listar competências e idiomas, com a orientação de separar cada item por linha.
+
+Essa divisão transforma a montagem do currículo em etapas menores e orienta o usuário sobre o tipo de informação esperado em cada campo. Os elementos `<input>` são usados para respostas curtas e específicas, enquanto os `<textarea>` recebem textos mais longos, como o resumo, as responsabilidades e as descrições.
+
 ### Seção de exemplos e visualização
 
 A seção abaixo do conteúdo principal foi pensada para mostrar exemplos de modelos ou miniaturas de currículos. No protótipo, essa área pode funcionar como uma vitrine visual com diferentes layouts. Por isso, o código usa uma sequência de imagens dentro de `<section>`.
@@ -155,3 +165,25 @@ Ao comparar o código com o protótipo, percebe-se que o HTML foi organizado de 
 Em outras palavras, a estrutura do HTML funciona como o esqueleto da interface, enquanto o CSS será responsável por estilizar cores, tamanhos, alinhamentos e aparência visual final. O HTML, nesse caso, organiza o conteúdo e ajuda a manter a lógica do protótipo clara e fácil de desenvolver.
 
 Como próximo passo, o projeto pode evoluir com a criação de estilos em CSS para deixar a página mais próxima do protótipo real, com botões mais atraentes, cards de modelo, área de formulário organizada e design responsivo para celular.
+
+## 6. CSS do projeto
+
+O arquivo `style.css` organiza a aparência do site por áreas da página. A lógica começa com um reset aplicado pelo seletor `*`, que remove margens e espaçamentos padrão, define o cálculo de tamanho dos elementos e padroniza a fonte. Em seguida, o `body` recebe a cor de fundo, a cor principal do texto e o espaçamento entre linhas.
+
+### Cabeçalho e conteúdo principal
+
+O seletor `header` cria a faixa azul de apresentação, centraliza o título, define o espaçamento interno e adiciona uma sombra discreta. Já o `main` limita a largura do formulário, centraliza o bloco na página e aplica fundo branco, cantos arredondados e sombra. Assim, a descrição e o formulário ficam reunidos em uma área visualmente destacada.
+
+As imagens diretamente dentro de `main` são redimensionadas para não ultrapassar o espaço disponível. Os parágrafos da apresentação ficam centralizados e com maior espaçamento, enquanto o `h2` usa a cor do cabeçalho e uma borda inferior para separar a introdução da área do formulário.
+
+### Campos e botões do formulário
+
+Os parágrafos dentro de `form` funcionam como rótulos visuais: recebem peso maior e margem superior para separar cada pergunta. Os seletores `input, textarea` aplicam a mesma largura, preenchimento interno, borda e tamanho de texto aos campos. O `textarea` ainda pode crescer apenas na vertical, mantendo a organização da página.
+
+Quando o usuário seleciona um campo, `input:focus, textarea:focus` troca a cor da borda e adiciona uma sombra azul. Esse estado mostra claramente onde a pessoa está digitando. Os botões `button[type="button"]` são tratados como ações secundárias para adicionar experiências, formações ou projetos, por isso usam uma cor neutra e dimensões menores.
+
+### Modelos e rodapé
+
+O seletor `section` controla a área dos modelos de currículo: limita sua largura, posiciona as imagens com `flex`, cria espaçamento entre elas e permite que elas quebrem linha com `flex-wrap`. O seletor `section img` fixa o tamanho das miniaturas, define borda, cantos arredondados e `object-fit: cover`, preservando uma apresentação uniforme mesmo quando as imagens tiverem proporções diferentes.
+
+No `footer`, o CSS cria uma faixa escura e centraliza o conteúdo. O botão `footer button[type="submit"]` recebe destaque com fundo verde, texto branco, tamanho maior e sombra, reforçando que `GERAR` é a ação principal. Os estados `:hover` e `:active` alteram a cor e reduzem levemente o botão durante o clique, dando retorno visual à interação. O parágrafo do rodapé fica menor, com cor mais clara e largura limitada para manter a leitura organizada.

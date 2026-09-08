@@ -1,135 +1,122 @@
 <!DOCTYPE html>
-    <html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Worclick</title>
-    </head>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Worclick</title>
+</head>
 
-    <body>
+<body>
+    <header>
+        <h1 id="msg-boas-vindas">Bem Vindo ao Worclick</h1>
+    </header>   
 
-        <header>
-            <h1>Bem Vindo ao Worclick</h1>
-        </header>   
-
-        <!--Aba principal-->
-        <main>
-            <!--Descrição-->
-                <img src="https://outliers.com.br/modelo-de-curriculo/">
-                <p>O Worclick é uma plataforma com o objetivo de impulsionar a carreira das pessoas. <br>Em poucos cliques, será possível gerar um currículo formatado e atrativo para empresas <br>completamente de graça. Pronto para mudar a sua vida conosco?</p>
-                <img src="https://www.livecareer.com.br/modelo-de-curriculo">
-            
-            <!--Formulário-->
-            <h2>Formulário para Currículo</h2>
-                <!-- DADOS PESSOAIS -->
-
+    <main>
+        <!-- Descrição -->
+        <img src="https://outliers.com.br/modelo-de-curriculo/" alt="Exemplo 1">
+        <p>O Worclick é uma plataforma com o objetivo de impulsionar a carreira das pessoas.<br>Em poucos cliques, será possível gerar um currículo formatado e atrativo para empresas<br>completamente de graça. Pronto para mudar a sua vida conosco?</p>
+        <img src="https://www.livecareer.com.br/modelo-de-curriculo" alt="Exemplo 2">
+        
+        <h2>Formulário para Currículo</h2>
+        
+        <form action="#" method="POST">
+            <!-- DADOS PESSOAIS -->
             <p>Digite seu nome completo:</p>
-            <textarea placeholder="Ex: Matheus de Andrade Lourenço"></textarea>
+            <input type="text" placeholder="Preencha seu nome nesse espaço">
 
             <p>Digite seu título ou área profissional:</p>
-            <textarea placeholder="Ex: Área 1 | Área 2 | Área 3 | Área 4"></textarea>
+            <input type="text" placeholder="Ex: Área 1 | Área 2 | Área 3 | Área 4">
 
             <p>Digite sua cidade e estado:</p>
-            <textarea placeholder="Ex: São Paulo - SP"></textarea>
+            <input type="text" placeholder="Ex: São Paulo - SP">
 
             <p>Digite seu telefone:</p>
-            <textarea placeholder="Ex: +55 11 99999-9999"></textarea>
+            <input type="tel" placeholder="Ex: +55 11 99999-9999">
 
             <p>Digite seu e-mail:</p>
-            <textarea placeholder="Ex: nome@email.com"></textarea>
+            <input type="email" placeholder="Ex: nome@email.com">
 
             <p>Digite o link do seu LinkedIn:</p>
-            <textarea placeholder="Cole aqui o link do seu LinkedIn"></textarea>
+            <input type="url" placeholder="Cole aqui o link do seu LinkedIn">
 
             <p>Digite o link do seu GitHub ou portfólio:</p>
-            <textarea placeholder="Cole aqui o link do seu GitHub ou portfólio"></textarea>
-
+            <input type="url" placeholder="Cole aqui o link do seu GitHub ou portfólio">
 
             <!-- RESUMO PROFISSIONAL -->
-
-            <p>Escreva um breve resumo pessoal seu</p>
-            <textarea placeholder="Traga um pouco sobre as áraes que tem experiência e seus principais interesses."></textarea>
+            <p>Escreva um breve resumo pessoal seu:</p>
+            <textarea placeholder="Traga um pouco sobre as áreas que tem experiência e seus principais interesses."></textarea>
 
             <!-- EXPERIÊNCIAS PROFISSIONAIS -->
-
             <p>Digite o nome da empresa em que você trabalha ou trabalhou:</p>
-            <textarea placeholder="Preencha as informações nesse espaço"></textarea>
+            <input type="text" placeholder="Preencha as informações nesse espaço">
 
             <p>Digite o nome do cargo:</p>
-            <textarea placeholder="Preencha as informações nesse espaço"></textarea>
+            <input type="text" placeholder="Preencha as informações nesse espaço">
 
             <p>Digite o período em que trabalhou nesse cargo:</p>
-            <textarea placeholder="Ex: Jan/2026 - Atual"></textarea>
+            <input type="text" placeholder="Ex: Jan/2026 - Atual">
 
             <p>Descreva suas principais responsabilidades nesse cargo:</p>
             <textarea placeholder="Descreva as atividades que você realizava e sua participação nos projetos da empresa"></textarea>
 
-
-            <button>Adicionar nova experiência</button>
-
+            <button type="button">Adicionar nova experiência</button>
 
             <!-- FORMAÇÃO ACADÊMICA -->
-
             <p>Digite o nome do seu curso:</p>
-            <textarea placeholder="Ex: Bacharelado em Ciência da Computação"></textarea>
+            <input type="text" placeholder="Ex: Bacharelado em Ciência da Computação">
 
             <p>Digite o nome da instituição de ensino:</p>
-            <textarea placeholder="Digite o nome da faculdade ou universidade"></textarea>
+            <input type="text" placeholder="Digite o nome da faculdade ou universidade">
 
             <p>Digite seu semestre ou período atual:</p>
-            <textarea placeholder="Preencha as informações nesse espaço"></textarea>
+            <input type="text" placeholder="Preencha as informações nesse espaço">
 
             <p>Digite o ano ou mês previsto para conclusão:</p>
-            <textarea placeholder="Preencha as informações nesse espaço"></textarea>
+            <input type="text" placeholder="Preencha as informações nesse espaço">
 
             <p>Existe alguma informação acadêmica adicional relevante?</p>
             <textarea placeholder="Preencha as informações nesse espaço"></textarea>
 
-            <button>Adicionar nova formatação<button>
+            <button type="button">Adicionar nova formação</button>
 
             <!-- PROJETOS EM DESTAQUE -->
-
             <p>Digite o nome de um projeto que deseja destacar:</p>
-            <textarea placeholder="Ex: Alarmes Inteligentes"></textarea>
+            <input type="text" placeholder="Ex: Alarmes Inteligentes">
 
             <p>Quais tecnologias foram utilizadas nesse projeto?</p>
-            <textarea placeholder="Ex: Python, Computer Vision, Telegram API"></textarea>
+            <input type="text" placeholder="Ex: Python, Computer Vision, Telegram API">
 
             <p>Descreva brevemente esse projeto:</p>
-            <textarea placeholder="Fale um pouo sobre como funciona, qual o contexto"></textarea>
+            <textarea placeholder="Fale um pouco sobre como funciona, qual o contexto"></textarea>
 
-            <button>Adicionar novo projeto</button>button>
+            <button type="button">Adicionar novo projeto</button>
 
-
-            <!-- COMPETÊNCIAS-->
-
+            <!-- COMPETÊNCIAS E IDIOMAS -->
             <p>Descreva abaixo todas as suas competências:</p>
+            <textarea placeholder="Separe uma competência por linha"></textarea>
+
+            <p>Liste seus idiomas abaixo:</p>
             <textarea placeholder="Separe um idioma por linha"></textarea>
-
-
-            <!-- IDIOMAS -->
-
-            <p>Liste seus idiomas abaixo?</p>
-            <textarea placeholder="Separe um idioma por linha"></textarea>
-
-        </main>
-        
-        <section>
-            <img src="">
-            <img src="">
-            <img src="">
-            <img src="">
-        </section>
-
-        <footer>
-            <!--Gerar currículo-->
-            <button type="GERAR">GERAR</button>
-            <br>
-            <p>O Worclick é um trabalho acadêmico desenvolvido por alunos do curso de Sistemas de Informação da Universidade Presbiteriana Mackenzie.
-                                            O trabalho no momento não há planejamento para fins lucrativos.
-                                                        Todos os direitos reservados.
-                                                            &copy; 2026 Worclick</p>
-        </footer>
+        </form>
+    </main>
     
-    </body>
-    </html>
+    <section>
+        <img src="https://placehold.co/150x200/0056b3/FFF?text=Modelo+1" alt="Modelo de currículo 1 Clássico">
+        <img src="https://placehold.co/150x200/0056b3/FFF?text=Modelo+2" alt="Modelo de currículo 2 Moderno">
+        <img src="https://placehold.co/150x200/0056b3/FFF?text=Modelo+3" alt="Modelo de currículo 3 Criativo">
+        <img src="https://placehold.co/150x200/0056b3/FFF?text=Modelo+4" alt="Modelo de currículo 4 Minimalista">
+    </section>
+
+    <footer>
+        <!--Gerar currículo-->
+        <button type="submit">GERAR</button>
+        <br>
+        <p>O Worclick é um trabalho acadêmico desenvolvido por alunos do curso de Sistemas de Informação da Universidade Presbiteriana Mackenzie.
+           O trabalho no momento não possui fins lucrativos.
+           Todos os direitos reservados.
+           &copy; 2026 Worclick</p>
+    </footer>
+
+</body>
+</html>
