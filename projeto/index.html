@@ -25,94 +25,87 @@
         <form action="#" method="POST">
             <!-- DADOS PESSOAIS -->
             <p>Digite seu nome completo:</p>
-            <input type="text" placeholder="Ex: Matheus de Andrade Lourenço">
+            <input id="nome" type="text" placeholder="Ex: Matheus de Andrade Lourenço">
 
             <p>Digite seu título ou área profissional:</p>
-            <input type="text" placeholder="Ex: Área 1 | Área 2 | Área 3 | Área 4">
+            <input id="titulo" type="text" placeholder="Ex: Área 1 | Área 2 | Área 3 | Área 4">
 
             <p>Digite sua cidade e estado:</p>
-            <input type="text" placeholder="Ex: São Paulo - SP">
+            <input id="cidade" type="text" placeholder="Ex: São Paulo - SP">
 
             <p>Digite seu telefone:</p>
-            <input type="tel" placeholder="Ex: +55 11 99999-9999">
+            <input id="telefone" type="tel" placeholder="Ex: +55 11 99999-9999">
 
             <p>Digite seu e-mail:</p>
-            <input type="email" placeholder="Ex: nome@email.com">
+            <input id="email" type="email" placeholder="Ex: nome@email.com">
 
             <p>Digite o link do seu LinkedIn:</p>
-            <input type="url" placeholder="Cole aqui o link do seu LinkedIn">
+            <input id="linkedin" type="url" placeholder="Cole aqui o link do seu LinkedIn">
 
             <p>Digite o link do seu GitHub ou portfólio:</p>
-            <input type="url" placeholder="Cole aqui o link do seu GitHub ou portfólio">
+            <input id="github" type="url" placeholder="Cole aqui o link do seu GitHub ou portfólio">
 
             <!-- RESUMO PROFISSIONAL -->
             <p>Escreva um breve resumo pessoal seu:</p>
-            <textarea placeholder="Traga um pouco sobre as áreas que tem experiência e seus principais interesses."></textarea>
+            <textarea id="resumo" placeholder="Traga um pouco sobre as áreas que tem experiência e seus principais interesses."></textarea>
 
             <!-- EXPERIÊNCIAS PROFISSIONAIS -->
             <p>Digite o nome da empresa em que você trabalha ou trabalhou:</p>
-            <input type="text" placeholder="Preencha as informações nesse espaço">
+            <input id="empresa" type="text" placeholder="Preencha as informações nesse espaço">
 
             <p>Digite o nome do cargo:</p>
-            <input type="text" placeholder="Preencha as informações nesse espaço">
+            <input id="cargo" type="text" placeholder="Preencha as informações nesse espaço">
 
             <p>Digite o período em que trabalhou nesse cargo:</p>
-            <input type="text" placeholder="Ex: Jan/2026 - Atual">
+            <input id="periodo" type="text" placeholder="Ex: Jan/2026 - Atual">
 
             <p>Descreva suas principais responsabilidades nesse cargo:</p>
-            <textarea placeholder="Descreva as atividades que você realizava e sua participação nos projetos da empresa"></textarea>
+            <textarea id="responsabilidades" placeholder="Descreva as atividades que você realizava e sua participação nos projetos da empresa"></textarea>
 
             <button type="button">Adicionar nova experiência</button>
 
             <!-- FORMAÇÃO ACADÊMICA -->
             <p>Digite o nome do seu curso:</p>
-            <input type="text" placeholder="Ex: Bacharelado em Ciência da Computação">
+            <input id="curso" type="text" placeholder="Ex: Bacharelado em Ciência da Computação">
 
             <p>Digite o nome da instituição de ensino:</p>
-            <input type="text" placeholder="Digite o nome da faculdade ou universidade">
+            <input id="instituicao" type="text" placeholder="Digite o nome da faculdade ou universidade">
 
             <p>Digite seu semestre ou período atual:</p>
-            <input type="text" placeholder="Preencha as informações nesse espaço">
+            <input id="semestre" type="text" placeholder="Preencha as informações nesse espaço">
 
             <p>Digite o ano ou mês previsto para conclusão:</p>
-            <input type="text" placeholder="Preencha as informações nesse espaço">
+            <input id="conclusao" type="text" placeholder="Preencha as informações nesse espaço">
 
             <p>Existe alguma informação acadêmica adicional relevante?</p>
-            <textarea placeholder="Preencha as informações nesse espaço"></textarea>
+            <textarea id="infoAcademica" placeholder="Preencha as informações nesse espaço"></textarea>
 
             <button type="button">Adicionar nova formação</button>
 
             <!-- PROJETOS EM DESTAQUE -->
             <p>Digite o nome de um projeto que deseja destacar:</p>
-            <input type="text" placeholder="Ex: Alarmes Inteligentes">
+            <input id="projeto" type="text" placeholder="Ex: Alarmes Inteligentes">
 
             <p>Quais tecnologias foram utilizadas nesse projeto?</p>
-            <input type="text" placeholder="Ex: Python, Computer Vision, Telegram API">
+            <input id="tecnologias" type="text" placeholder="Ex: Python, Computer Vision, Telegram API">
 
             <p>Descreva brevemente esse projeto:</p>
-            <textarea placeholder="Fale um pouco sobre como funciona, qual o contexto"></textarea>
+            <textarea id="descricao" placeholder="Fale um pouco sobre como funciona, qual o contexto"></textarea>
 
             <button type="button">Adicionar novo projeto</button>
 
             <!-- COMPETÊNCIAS E IDIOMAS -->
             <p>Descreva abaixo todas as suas competências:</p>
-            <textarea placeholder="Separe uma competência por linha"></textarea>
+            <textarea id="competencias" placeholder="Separe uma competência por linha"></textarea>
 
             <p>Liste seus idiomas abaixo:</p>
-            <textarea placeholder="Separe um idioma por linha"></textarea>
+            <textarea id="idiomas" placeholder="Separe um idioma por linha"></textarea>
         </form>
     </main>
-    
-    <section>
-        <img src="https://placehold.co/150x200/0056b3/FFF?text=Modelo+1" alt="Modelo de currículo 1 Clássico">
-        <img src="https://placehold.co/150x200/0056b3/FFF?text=Modelo+2" alt="Modelo de currículo 2 Moderno">
-        <img src="https://placehold.co/150x200/0056b3/FFF?text=Modelo+3" alt="Modelo de currículo 3 Criativo">
-        <img src="https://placehold.co/150x200/0056b3/FFF?text=Modelo+4" alt="Modelo de currículo 4 Minimalista">
-    </section>
 
     <footer>
         <!--Gerar currículo-->
-        <button type="submit">GERAR</button>
+        <button type="submit" onclick="gerarCurriculo()" id="enviar">GERAR</button>
         <br>
         <p>O Worclick é um trabalho acadêmico desenvolvido por alunos do curso de Sistemas de Informação da Universidade Presbiteriana Mackenzie.
            O trabalho no momento não possui fins lucrativos.
@@ -120,5 +113,6 @@
            &copy; 2026 Worclick</p>
     </footer>
 
+    <script src="script.js"></script>
 </body>
 </html>

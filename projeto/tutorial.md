@@ -187,3 +187,132 @@ Quando o usuário seleciona um campo, `input:focus, textarea:focus` troca a cor 
 O seletor `section` controla a área dos modelos de currículo: limita sua largura, posiciona as imagens com `flex`, cria espaçamento entre elas e permite que elas quebrem linha com `flex-wrap`. O seletor `section img` fixa o tamanho das miniaturas, define borda, cantos arredondados e `object-fit: cover`, preservando uma apresentação uniforme mesmo quando as imagens tiverem proporções diferentes.
 
 No `footer`, o CSS cria uma faixa escura e centraliza o conteúdo. O botão `footer button[type="submit"]` recebe destaque com fundo verde, texto branco, tamanho maior e sombra, reforçando que `GERAR` é a ação principal. Os estados `:hover` e `:active` alteram a cor e reduzem levemente o botão durante o clique, dando retorno visual à interação. O parágrafo do rodapé fica menor, com cor mais clara e largura limitada para manter a leitura organizada.
+
+## 7. JavaScript do projeto
+
+O arquivo `script.js` concentra o comportamento principal do Worclick. Enquanto o HTML organiza os campos e o CSS define a aparência da página, o JavaScript busca as informações digitadas, reúne os dados em uma estrutura única, monta o currículo e inicia o download do arquivo Word.
+
+### Lista de campos do formulário
+
+Logo no início do arquivo, o código cria um array com os identificadores dos campos que devem ser utilizados na geração do currículo:
+
+```javascript
+const campos = ["nome", "titulo", "cidade", "telefone", "email", "linkedin", "github", "resumo", "empresa", "cargo", "periodo", "responsabilidades", "curso", "instituicao", "semestre", "conclusao", "infoAcademica", "projeto", "tecnologias", "descricao", "competencias", "idiomas"];
+```
+
+Cada valor do array corresponde ao atributo `id` de um campo do formulário em `index.html`. Dessa forma, o JavaScript consegue localizar todas as informações necessárias sem repetir a busca manualmente em vários pontos do código.
+
+### Leitura das informações
+
+A função `valor` recebe um identificador e procura o elemento correspondente na página. O método `trim()` remove espaços desnecessários no início e no final do texto. Caso o campo não seja encontrado ou esteja vazio, a função retorna uma string vazia:
+
+```javascript
+function valor(id) {
+    return document.getElementById(id)?.value.trim() || "";
+}
+```
+
+O operador `?.` evita um erro caso algum elemento não exista no HTML. Já o operador `||` garante que o restante do programa sempre receba um texto, mesmo quando o campo estiver sem preenchimento.
+
+A função `coletarCurriculo` percorre a lista de campos e cria um objeto chamado `dados`. Esse objeto reúne todas as respostas do usuário e funciona como a base usada para produzir o documento final:
+
+```javascript
+function coletarCurriculo() {
+    const dados = {};
+    campos.forEach((id) => {
+        dados[id] = valor(id);
+    });
+    return dados;
+}
+```
+
+Essa organização facilita a manutenção do projeto, pois os dados passam a ser tratados em conjunto. Assim, a função que gera o documento não precisa acessar novamente cada campo da página.
+
+### Tratamento dos textos
+
+Antes de inserir os dados no documento, a função `escapar` substitui caracteres especiais por entidades HTML. Isso evita que símbolos como `<`, `>` e `&` sejam interpretados como parte da estrutura do documento:
+
+```javascript
+function escapar(texto) {
+    return texto.replace(/[&<>"']/g, (caractere) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    })[caractere]);
+}
+```
+
+A função `paragrafo` reaproveita esse tratamento e também converte quebras de linha digitadas em `textarea` para a tag `<br>`. Dessa forma, textos maiores, como o resumo profissional e as responsabilidades, mantêm a separação dos parágrafos no arquivo gerado.
+
+### Montagem do currículo
+
+A função `gerarDocumento` recebe o objeto com os dados preenchidos e monta uma string com estrutura HTML. O Word consegue abrir esse conteúdo quando ele é salvo com o tipo MIME de documento do Microsoft Word.
+
+Os dados de contato são reunidos em uma única linha usando `filter(Boolean)`, que remove campos vazios, e `join(" | ")`, que separa as informações visualmente:
+
+```javascript
+const contato = [dados.cidade, dados.telefone, dados.email, dados.linkedin, dados.github]
+    .filter(Boolean)
+    .map(escapar)
+    .join(" | ");
+```
+
+Experiência profissional, formação acadêmica e projeto em destaque são adicionados apenas quando existe pelo menos uma informação preenchida. Isso evita que o currículo apresente seções vazias. A função `secao` realiza essa verificação para os títulos das partes do documento:
+
+```javascript
+function secao(titulo, conteudo) {
+    return conteudo ? `<h2>${titulo}</h2>${conteudo}` : "";
+}
+```
+
+O documento utiliza títulos (`h1`, `h2` e `h3`) e parágrafos (`p`) em uma ordem simples, sem tabelas, colunas ou elementos gráficos necessários para a leitura. Essa escolha deixa o arquivo mais compatível com sistemas ATS, que fazem a leitura automática de currículos para identificar palavras-chave, experiências e competências.
+
+Além do conteúdo, a função inclui um pequeno bloco de CSS no próprio documento. Ele define uma fonte comum, tamanhos de título, espaçamento e linhas divisórias entre as seções. O resultado é um currículo formatado, mas ainda simples para programas de recrutamento interpretarem.
+
+### Validação e mensagem de status
+
+Antes de gerar o arquivo, a função `gerarCurriculo` verifica se o nome foi preenchido. Esse campo é obrigatório porque identifica o currículo e também é utilizado para criar o nome do arquivo:
+
+```javascript
+if (!dados.nome) {
+    mostrarStatus("Preencha pelo menos o nome completo para gerar o currículo.");
+    document.getElementById("nome")?.focus();
+    return;
+}
+```
+
+Quando há um problema ou quando o download é concluído, a função `mostrarStatus` cria ou atualiza um parágrafo abaixo do botão de geração. O atributo `role="status"` permite que tecnologias assistivas reconheçam essa mensagem como um retorno da ação realizada.
+
+### Geração e download do arquivo Word
+
+Depois da validação, o conteúdo produzido por `gerarDocumento` é transformado em um `Blob`. Esse objeto representa os dados do arquivo em memória e recebe o tipo `application/msword`:
+
+```javascript
+const arquivo = new Blob([gerarDocumento(dados)], {
+    type: "application/msword;charset=utf-8"
+});
+```
+
+Em seguida, o programa cria temporariamente um link, aponta esse link para o `Blob` e define o nome do arquivo. O clique programático inicia o download no navegador da pessoa:
+
+```javascript
+const link = document.createElement("a");
+link.href = URL.createObjectURL(arquivo);
+link.download = `curriculo-${dados.nome}.doc`;
+link.click();
+URL.revokeObjectURL(link.href);
+```
+
+O nome é normalizado para remover caracteres que poderiam causar problemas em nomes de arquivo. Depois do clique, `URL.revokeObjectURL` libera o endereço temporário criado para o download.
+
+### Fluxo geral da aplicação
+
+O funcionamento do JavaScript pode ser resumido nas seguintes etapas:
+
+1. A pessoa preenche os campos do formulário.
+2. O botão `GERAR` chama a função `gerarCurriculo`, conforme definido no atributo `onclick` do HTML.
+3. `coletarCurriculo` busca e organiza todos os valores.
+4. O nome é validado antes da criação do documento.
+5. `gerarDocumento` monta o currículo formatado em HTML compatível com Word e ATS.
+6. Um `Blob` é criado e baixado como arquivo `.doc`.
+7. Uma mensagem informa se foi necessário preencher o nome ou se o download foi iniciado.
+
+Essa divisão separa as responsabilidades do código: uma parte lê os campos, outra trata os textos, outra monta o currículo e a última controla o download. Com isso, o projeto mantém uma lógica simples e pode receber novos campos ou seções no futuro com alterações localizadas.
