@@ -157,6 +157,7 @@ footer button[type="submit"]:active {
 }
 
 footer p {
+    text-align: center;
     font-size: 0.9rem;
     color: #adb5bd;
     max-width: 600px;

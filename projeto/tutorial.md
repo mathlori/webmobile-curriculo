@@ -269,17 +269,40 @@ Além do conteúdo, a função inclui um pequeno bloco de CSS no próprio docume
 
 ### Validação e mensagem de status
 
-Antes de gerar o arquivo, a função `gerarCurriculo` verifica se o nome foi preenchido. Esse campo é obrigatório porque identifica o currículo e também é utilizado para criar o nome do arquivo:
+Antes de gerar o arquivo, a função `validador` coleta os dados e verifica quatro informações obrigatórias: nome, e-mail, telefone e título ou área profissional. A validação acontece na ordem em que os campos aparecem no formulário. Assim que encontra um problema, o programa mostra uma mensagem, coloca o foco no campo correspondente e interrompe o processamento:
 
 ```javascript
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const apenasNumerosTel = dados.telefone.replace(/\D/g, "");
+
 if (!dados.nome) {
-    mostrarStatus("Preencha pelo menos o nome completo para gerar o currículo.");
+    mostrarStatus("Por favor, preencha o seu nome completo.", true);
     document.getElementById("nome")?.focus();
-    return;
+    return -1;
+}
+
+if (!dados.email || !emailRegex.test(dados.email)) {
+    mostrarStatus("Por favor, insira um e-mail válido (ex: nome@email.com).", true);
+    document.getElementById("email")?.focus();
+    return -1;
+}
+
+if (!dados.telefone || apenasNumerosTel.length < 10) {
+    mostrarStatus("Por favor, insira um telefone válido contendo o DDD.", true);
+    document.getElementById("telefone")?.focus();
+    return -1;
+}
+
+if (!dados.titulo) {
+    mostrarStatus("Por favor, preencha o seu título ou área profissional.", true);
+    document.getElementById("titulo")?.focus();
+    return -1;
 }
 ```
 
-Quando há um problema ou quando o download é concluído, a função `mostrarStatus` cria ou atualiza um parágrafo abaixo do botão de geração. O atributo `role="status"` permite que tecnologias assistivas reconheçam essa mensagem como um retorno da ação realizada.
+O nome precisa estar preenchido. O e-mail deve seguir um formato com texto antes do `@`, domínio e ponto. Para o telefone, caracteres como espaços, parênteses e hífens são removidos antes da contagem, que precisa resultar em pelo menos dez dígitos, incluindo o DDD. Por fim, o campo de título ou área profissional também não pode estar vazio. Embora o formulário tenha um campo chamado `cargo` para a experiência profissional, a validação obrigatória implementada no código usa o campo `titulo`.
+
+Quando há um problema ou quando o download é concluído, a função `mostrarStatus` cria ou atualiza um parágrafo abaixo do botão de geração. O parâmetro `erro` altera a cor da mensagem, e o atributo `role="status"` permite que tecnologias assistivas reconheçam esse retorno da ação realizada.
 
 ### Geração e download do arquivo Word
 
@@ -308,11 +331,12 @@ O nome é normalizado para remover caracteres que poderiam causar problemas em n
 O funcionamento do JavaScript pode ser resumido nas seguintes etapas:
 
 1. A pessoa preenche os campos do formulário.
-2. O botão `GERAR` chama a função `gerarCurriculo`, conforme definido no atributo `onclick` do HTML.
+2. O botão `GERAR` chama a função `iniciarProcessamento`, conforme definido no atributo `onclick` do HTML.
 3. `coletarCurriculo` busca e organiza todos os valores.
-4. O nome é validado antes da criação do documento.
-5. `gerarDocumento` monta o currículo formatado em HTML compatível com Word e ATS.
-6. Um `Blob` é criado e baixado como arquivo `.doc`.
-7. Uma mensagem informa se foi necessário preencher o nome ou se o download foi iniciado.
+4. `validador` verifica o nome, o formato do e-mail, a quantidade de dígitos do telefone e o título ou área profissional.
+5. Se algum dado for inválido, uma mensagem é exibida e o foco retorna ao campo que precisa ser corrigido.
+6. `gerarDocumento` monta o currículo formatado em HTML compatível com Word e ATS.
+7. Um `Blob` é criado e baixado como arquivo `.doc`.
+8. Uma mensagem informa se foi necessário corrigir algum dado ou se o download foi iniciado.
 
 Essa divisão separa as responsabilidades do código: uma parte lê os campos, outra trata os textos, outra monta o currículo e a última controla o download. Com isso, o projeto mantém uma lógica simples e pode receber novos campos ou seções no futuro com alterações localizadas.
