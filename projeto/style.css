@@ -12,6 +12,11 @@ body {
     line-height: 1.6;
 }
 
+img {
+    max-width: 100%;
+    display: block;
+}
+
 /* Cabeçalho */
 header {
     background-color: #0056b3;
@@ -21,9 +26,14 @@ header {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+header h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+}
+
 /* Área principal (Formulário e textos) */
 main {
     max-width: 800px;
+    width: min(90%, 800px);
     margin: 2rem auto;
     padding: 2rem;
     background-color: white;
@@ -32,19 +42,28 @@ main {
 }
 
 main > article {
-    display: flex;
-    align-self: center;
-    gap: 20px;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
 }
 
 main > article > img {
-    padding-top: 80px;
-    padding: 20px;
-    width: 150px;
-    height: 150px;
-    border-radius: 4px;
-    margin-bottom: 1rem;
+    width: 100%;
+    max-width: 180px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    object-fit: cover;
+    justify-self: center;
+}
+
+main > article > p {
+    text-align: center;
+    font-size: 1.05rem;
+    color: #555;
+    margin: 0;
 }
 
 main > p {
@@ -162,4 +181,69 @@ footer p {
     color: #adb5bd;
     max-width: 600px;
     margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+
+    /*Altera espaços na área inicial*/
+    main {
+        padding: 1.25rem;
+        width: min(92%, 800px);
+    }
+
+    /*Altera tamanho de coluna e espaçamento padrão*/
+    main > article {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+   /*Altera tamanho das imagens*/     
+    main > article > img {
+        max-width: 220px;
+    }
+
+    /*Altera tamanho das fontes*/
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    form p {
+        font-size: 0.98rem;
+    }
+
+    input, textarea {
+        font-size: 0.95rem;
+    }
+    
+    /*Altera espaçamento interno*/
+    footer {
+        padding: 2.5rem 1rem;
+    }
+
+    footer button[type="submit"] {
+        width: min(100%, 280px);
+        padding: 1rem 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /*Altera espaços na área inicial*/
+    header {
+        padding: 1.5rem 1rem;
+    }
+    /*Altera espaços na área principal*/
+    main {
+        margin: 1rem auto;
+        padding: 1rem;
+    }
+
+    /*Altera tamanho do botão*/
+    button[type="button"] {
+        width: 100%;
+    }
+
+    /*Altera fontes*/
+    footer p {
+        font-size: 0.8rem;
+    }
 }

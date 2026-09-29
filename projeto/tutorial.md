@@ -11,6 +11,9 @@
 
 Um processo que dificulta a vida de alguns profissionais em início de carreira diz respeito a montagem de currículos. Isso ocorre por conta da falta de habilidade em algumas ferramentas úteis para montagem como Word ou Canva ou até dificuldade de manipulação em celulares. Nesse contexto, enxerga-se uma oportunidade de automação desse processo.
 
+**Caráter extensionista:** O caráter extensionista do projeto está em linha com a ODS 10 da ONU (Combate à desigualdade). Dado que ele agiliza o processo de montagem de currículos atrativos para o mercado, facilitando o proceso de busca de emprego para pessoas em vulnerabilidade. 
+
+
 ### Público-alvo
 
 - Profissionais em início de carreira
