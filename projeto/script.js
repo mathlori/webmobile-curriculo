@@ -65,8 +65,6 @@ function verificarDados(dados) {
 }
 
 function validador(dados) {
-    const dados = coletarCurriculo();
-
     // 1. Validar Nome Completo (obrigatório)
     if (!dados.nome) {
         mostrarStatus("Por favor, preencha o seu nome completo.", true);
@@ -101,10 +99,10 @@ function validador(dados) {
 
 // Interação para baixar arquivo Word
 function iniciarProcessamento() {
-    
-    let validador = validador(dados);
+    const dados = coletarCurriculo();
+    const resultadoValidacao = validador(dados);
 
-    if (validador === -1) return;
+    if (resultadoValidacao === -1) return;
     
     // Se todas as validações passarem, gera o documento Word
     const arquivo = new Blob([gerarDocumento(dados)], { type: "application/msword;charset=utf-8" });
