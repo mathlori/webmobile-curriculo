@@ -1,6 +1,7 @@
 import Link from "next/link";
 import styles from "../page.module.css";
 
+// Grupos e campos do formulário definidos como dados para manter a estrutura consistente.
 const grupos = [
   {
     id: "perfil",
@@ -61,8 +62,11 @@ const grupos = [
   },
 ];
 
+// Renderiza um campo com rótulo associado e seleciona textarea para respostas longas.
 function Campo({ campo }) {
+  // Campos marcados como full ocupam a largura disponível no grid.
   const className = campo.full ? `${styles.field} ${styles.fieldFull}` : styles.field;
+  // Propriedades comuns aos controles evitam repetir a mesma configuração no JSX.
   const propriedades = {
     autoComplete: campo.autocomplete,
     className: campo.multiline ? styles.textarea : styles.input,
@@ -73,60 +77,68 @@ function Campo({ campo }) {
   };
 
   return (
-    <div className={className}>
-      <label htmlFor={campo.id}>{campo.label}</label>
+    <label className={className} htmlFor={campo.id}>
+      <span>{campo.label}</span>
       {campo.multiline ? <textarea {...propriedades} /> : <input {...propriedades} />}
-    </div>
+    </label>
   );
 }
 
+// Rota /curriculo com grupos de dados, modelos ilustrativos e navegação de continuidade.
 export default function CurriculoPage() {
   return (
-    <div className={styles.page}>
+    <main className={`${styles.siteMain} ${styles.page}`}>
       <header className={styles.pageHeading}>
         <p className={styles.eyebrow}>Worclick · seu perfil profissional</p>
-        <h1>Formulário para currículo</h1>
+        <h1 id="curriculo-heading">Formulário para currículo</h1>
         <p>Preencha as informações que fazem sentido para sua trajetória. Você pode revisar tudo antes de continuar.</p>
       </header>
 
-      <div className={styles.formLayout}>
-        <div className={styles.formSections}>
+      {/* Área principal do formulário, organizada em dados, modelos e próxima etapa. */}
+      <section aria-label="Preenchimento do currículo" className={styles.formLayout}>
+        <section aria-label="Dados do currículo" className={styles.formSections}>
+          {/* Cada grupo apresenta seu título, descrição e conjunto de campos correspondente. */}
           {grupos.map((grupo) => (
             <section aria-labelledby={`titulo-${grupo.id}`} className={styles.formSection} key={grupo.id}>
               <h2 id={`titulo-${grupo.id}`}>{grupo.titulo}</h2>
               <p>{grupo.descricao}</p>
-              <div className={styles.fieldGrid}>
+              <fieldset aria-labelledby={`titulo-${grupo.id}`} className={styles.fieldGrid}>
                 {grupo.campos.map((campo) => <Campo campo={campo} key={campo.id} />)}
-              </div>
+              </fieldset>
+              {/* Ações de repetição ficam desativadas enquanto não houver lógica para duplicar grupos. */}
               {grupo.id === "experiencia" && <button className={styles.addButton} disabled type="button">Adicionar nova experiência</button>}
               {grupo.id === "formacao" && <button className={styles.addButton} disabled type="button">Adicionar nova formação</button>}
               {grupo.id === "projetos" && <button className={styles.addButton} disabled type="button">Adicionar novo projeto</button>}
             </section>
           ))}
-        </div>
+        </section>
 
+        {/* Pré-visualizações estáticas dos modelos previstos para o documento final. */}
         <section className={styles.templateSection} aria-labelledby="modelos-titulo">
           <h2 id="modelos-titulo">Modelos de currículo</h2>
           <p>Exemplos visuais de formatos que poderão ser gerados pelo Worclick.</p>
-          <div className={styles.templateGrid}>
+          <ul className={styles.templateGrid}>
             {["Clássico", "Essencial", "Criativo", "Objetivo"].map((modelo, index) => (
-              <article className={styles.templateCard} key={modelo}>
-                <div className={`${styles.templatePreview} ${index % 2 ? styles.templatePreviewAlt : ""}`} aria-hidden="true">
-                  <i />
-                  <i />
-                  <span />
-                  <i />
-                  <i />
-                  <span />
-                  <i />
-                  <i />
-                </div>
-                <h3>{modelo}</h3>
-              </article>
+              <li key={modelo}>
+                <article className={styles.templateCard}>
+                  <figure className={`${styles.templatePreview} ${index % 2 ? styles.templatePreviewAlt : ""}`} aria-hidden="true">
+                    <i />
+                    <i />
+                    <span />
+                    <i />
+                    <i />
+                    <span />
+                    <i />
+                    <i />
+                  </figure>
+                  <h3>{modelo}</h3>
+                </article>
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
 
+        {/* Links de continuidade; os dados preenchidos ainda não são processados nesta etapa. */}
         <aside className={styles.formAside}>
           <span>Próxima etapa</span>
           <h2>Revise antes de concluir</h2>
@@ -134,7 +146,7 @@ export default function CurriculoPage() {
           <Link className={styles.primaryButton} href="/curriculo/concluido">Concluir etapa <span aria-hidden="true">↗</span></Link>
           <Link className={styles.backLink} href="/">Voltar ao início</Link>
         </aside>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }

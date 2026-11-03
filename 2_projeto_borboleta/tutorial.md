@@ -26,7 +26,7 @@ A migração parte dos arquivos `index.html`, `style.css` e `script.js` da pasta
 | Projeto HTML/CSS/JS | Projeto React/Next.js |
 | --- | --- |
 | `index.html` e seus blocos de conteúdo | `src/app/page.js` para o início e páginas próprias para cada rota |
-| Elementos repetidos do cabeçalho | `src/app/components/Navegacao.js`, incluído pelo layout compartilhado |
+| Elementos repetidos do cabeçalho | `src/app/components/Navegacao.js`, incluído pelo layout compartilhado e estruturado com `header`, `nav`, `ul` e `li` |
 | Campos do formulário no HTML | Grupos de campos renderizados em `src/app/curriculo/page.js` |
 | `style.css` | `src/app/globals.css` para regras globais e `src/app/page.module.css` para estilos das telas |
 | Links e navegação da página única | `next/link` e pastas do App Router |
@@ -91,6 +91,8 @@ O formato da mensagem e a configuração do provedor serão definidos nessa etap
 ### React e rotas
 
 - `layout.js` compartilha navegação e rodapé; `Navegacao.js` concentra os links principais.
+- `Navegacao.js` usa `header` e `nav` para identificar a navegação principal, com os links em uma lista `ul`/`li`; as páginas usam elementos semânticos no lugar de wrappers genéricos e não contêm tags `div`.
+- As páginas usam um único `main` como região principal; seções, cabeçalhos, grupos de campos e listas usam elementos semânticos como `section`, `header`, `fieldset`, `label`, `ul` e `li`.
 - Cada tela tem seu próprio `page.js`, seguindo a estrutura de pastas do App Router.
 - `Acesso.js` reaproveita a composição visual entre início de sessão e cadastro.
 - A página de currículo organiza os campos em grupos temáticos e mantém rótulos associados aos controles.

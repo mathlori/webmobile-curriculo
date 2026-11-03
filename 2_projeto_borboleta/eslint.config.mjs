@@ -1,6 +1,7 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 
+// Combina as regras recomendadas do Next.js com as exclusões do build.
 const eslintConfig = defineConfig([
   ...nextVitals,
   // Override default ignores of eslint-config-next.
