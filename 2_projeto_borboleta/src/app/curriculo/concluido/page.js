@@ -1,7 +1,7 @@
 import Link from "next/link";
-import styles from "../../page.module.css";
+import styles from "./page.module.css";
 
-// Página apresentada após o formulário; as opções descritas ainda são etapas futuras.
+// Confirma que os dados do único currículo foram salvos e apresenta as próximas etapas.
 export default function ConcluidoPage() {
   return (
     <main className={`${styles.siteMain} ${styles.page}`}>
@@ -11,7 +11,7 @@ export default function ConcluidoPage() {
           <span className={styles.completionMark} aria-hidden="true">✓</span>
           <p className={styles.eyebrow}>Etapa concluída</p>
           <h1 id="completion-heading">Seu próximo passo começa agora.</h1>
-          <p>As formas de gerar e receber o currículo serão conectadas em uma próxima etapa do projeto.</p>
+          <p>Suas informações foram salvas em um único currículo. As opções para baixar ou receber esse documento serão conectadas em uma próxima etapa.</p>
         </header>
 
         {/* Alternativas ilustrativas para baixar o documento ou recebê-lo no celular. */}

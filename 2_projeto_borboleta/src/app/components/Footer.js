@@ -1,5 +1,5 @@
-// Estilos do rodapé definidos no CSS Module compartilhado.
-import styles from "../page.module.css";
+// Estilos isolados do rodapé.
+import styles from "./Footer.module.css";
 // Link retorna à página inicial usando a navegação do Next.js.
 import Link from "next/link";
 

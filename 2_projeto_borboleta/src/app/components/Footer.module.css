@@ -1,0 +1,34 @@
+.siteFooter {
+  display: flex;
+  min-height: 120px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 26px max(24px, calc((100% - 1120px) / 2));
+  background: #343a40;
+  color: white;
+}
+
+.footerBrand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  font-size: 17px;
+  font-weight: 750;
+}
+
+.siteFooter p,
+.siteFooter > span {
+  color: #c6d0cc;
+  font-size: 12px;
+}
+
+@media (max-width: 600px) {
+  .siteFooter {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 9px;
+    padding: 24px 18px;
+  }
+}

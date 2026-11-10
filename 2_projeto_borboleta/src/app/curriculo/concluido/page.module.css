@@ -1,0 +1,143 @@
+.siteMain {
+  width: 100%;
+  flex: 1;
+}
+
+.page {
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.eyebrow {
+  margin-bottom: 18px;
+  color: var(--coral-dark);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.completionPage {
+  display: grid;
+  min-height: 600px;
+  grid-template-columns: 0.8fr 1.2fr;
+  align-items: center;
+  gap: clamp(36px, 8vw, 110px);
+  padding: 64px 0 80px;
+}
+
+.completionIntro h1 {
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.completionIntro > p:last-child {
+  max-width: 400px;
+  margin-top: 17px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.completionMark {
+  display: grid;
+  width: 54px;
+  aspect-ratio: 1;
+  margin-bottom: 24px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--mint);
+  color: var(--forest);
+  font-size: 24px;
+}
+
+.deliveryOptions {
+  display: grid;
+  gap: 14px;
+}
+
+.deliveryOption {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 18px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.deliveryOption h2 {
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 21px;
+  font-weight: 650;
+}
+
+.deliveryOption p {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.comingSoon {
+  padding: 7px 9px;
+  background: var(--peach);
+  color: var(--coral-dark);
+  font-size: 10px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.completionBack {
+  display: inline-flex;
+  margin-top: 22px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.completionBack:hover {
+  color: var(--coral-dark);
+}
+
+@media (max-width: 800px) {
+  .completionPage {
+    min-height: 0;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+
+  .completionIntro h1 {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 600px) {
+  .page {
+    width: calc(100% - 36px);
+  }
+
+  .completionPage {
+    grid-template-columns: 1fr;
+    gap: 27px;
+    padding: 44px 0 54px;
+  }
+
+  .completionIntro h1 {
+    font-size: 40px;
+  }
+
+  .deliveryOption {
+    grid-template-columns: 1fr;
+    gap: 13px;
+    padding: 18px;
+  }
+
+  .comingSoon {
+    justify-self: start;
+  }
+}

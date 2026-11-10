@@ -1,0 +1,285 @@
+.siteMain {
+  width: 100%;
+  flex: 1;
+}
+
+.page {
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.eyebrow {
+  margin-bottom: 18px;
+  color: var(--coral-dark);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.primaryButton {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--coral);
+  color: white;
+  font-size: 14px;
+  font-weight: 650;
+  text-align: center;
+  transition: background 160ms ease, transform 160ms ease;
+  cursor: pointer;
+}
+
+.primaryButton:hover {
+  transform: translateY(-1px);
+  background: var(--coral-dark);
+}
+
+.pageHeading {
+  max-width: 760px;
+  padding: 58px 0 32px;
+}
+
+.pageHeading h1 {
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 46px;
+  font-weight: 700;
+  line-height: 1.12;
+}
+
+.pageHeading > p:last-child {
+  margin-top: 13px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.formLayout {
+  display: grid;
+  max-width: 800px;
+  margin: 0 auto;
+  gap: 22px;
+  padding-bottom: 76px;
+}
+
+.formSections {
+  display: grid;
+  gap: 18px;
+}
+
+.formSection {
+  padding: 26px 28px 30px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+  box-shadow: 0 2px 6px #00000008;
+}
+
+.formSection h2 {
+  margin-bottom: 6px;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.formSection > p {
+  margin-bottom: 23px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.addButton {
+  min-height: 40px;
+  margin-top: 18px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 4px;
+  background: #e9ecef;
+  color: #495057;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.addButton:hover {
+  background: #dce1e5;
+}
+
+.experienceList {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.experienceEntry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 15px;
+  min-width: 0;
+  margin: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.experienceEntry legend {
+  padding: 0 6px;
+  color: var(--forest);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.removeButton {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--coral-dark);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.removeButton:hover {
+  text-decoration: underline;
+}
+
+.fieldGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 15px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.field {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  cursor: text;
+}
+
+.fieldFull {
+  grid-column: 1 / -1;
+}
+
+.field > span {
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  outline: none;
+  background: white;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+}
+
+.textarea {
+  min-height: 104px;
+  resize: vertical;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: var(--forest);
+  box-shadow: 0 0 0 2px #0056b333;
+}
+
+.formAside {
+  position: static;
+  padding: 23px;
+  border-radius: 6px;
+  background: var(--mint);
+}
+
+.formAside > span {
+  color: var(--forest);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.formAside h2 {
+  margin-top: 12px;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 24px;
+  font-weight: 650;
+}
+
+.formAside p {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.formAside .saveError {
+  color: #a32121;
+  font-weight: 650;
+}
+
+.formAside .primaryButton {
+  width: 100%;
+  margin-top: 22px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.backLink {
+  display: inline-flex;
+  margin-top: 15px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.backLink:hover {
+  color: var(--ink);
+}
+
+@media (max-width: 600px) {
+  .page {
+    width: calc(100% - 36px);
+  }
+
+  .pageHeading {
+    padding: 42px 0 25px;
+  }
+
+  .pageHeading h1 {
+    font-size: 37px;
+  }
+
+  .formSection {
+    padding: 21px 17px 23px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primaryButton {
+    transition: none;
+  }
+}

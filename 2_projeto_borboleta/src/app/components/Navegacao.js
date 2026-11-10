@@ -1,7 +1,7 @@
 // Link faz a navegação interna sem recarregar o documento.
 import Link from "next/link";
-// Estilos compartilhados da navegação e do restante da aplicação.
-import styles from "../page.module.css";
+// Estilos isolados do cabeçalho de navegação.
+import styles from "./Navegacao.module.css";
 
 // Cabeçalho comum às páginas, com links agrupados em uma lista semântica.
 export default function Nav() {
