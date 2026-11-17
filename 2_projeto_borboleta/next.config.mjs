@@ -3,6 +3,7 @@ const nextConfig = {
   // Habilita recursos experimentais utilizados pelo App Router deste projeto.
   experimental: {
     agentFeedback: true,
+    agentUpgrade: "security",
   },
   // Ativa cache de componentes, prefetch parcial e o compilador do React.
   cacheComponents: true,
