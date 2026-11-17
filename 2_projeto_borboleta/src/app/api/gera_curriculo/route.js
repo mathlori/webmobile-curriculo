@@ -1,3 +1,4 @@
+// Campos textuais aceitos no corpo; experiências são validadas separadamente.
 const camposTexto = [
   "nome",
   "titulo",
@@ -19,6 +20,7 @@ const camposTexto = [
   "idiomas",
 ];
 
+// Evita que o conteúdo do currículo seja interpretado como marcação HTML.
 function escaparHtml(texto) {
   return texto.replace(/[&<>"']/g, (caractere) => ({
     "&": "&amp;",
@@ -29,14 +31,17 @@ function escaparHtml(texto) {
   })[caractere]);
 }
 
+// Preserva as quebras de linha dos campos longos no documento.
 function textoComQuebras(texto) {
   return escaparHtml(texto).replace(/\r?\n/g, "<br>");
 }
 
+// Não inclui seções que não tenham conteúdo.
 function secao(titulo, conteudo) {
   return conteudo ? `<section><h2>${titulo}</h2>${conteudo}</section>` : "";
 }
 
+// Remove acentos e caracteres especiais para formar um nome de arquivo seguro.
 function normalizarNome(nome) {
   const slug = nome
     .normalize("NFD")
@@ -48,6 +53,7 @@ function normalizarNome(nome) {
   return `curriculo-${slug || "profissional"}.doc`;
 }
 
+// Monta o documento e omite experiências e seções que estejam vazias.
 function gerarDocumento(dados) {
   const contato = ["cidade", "telefone", "email", "linkedin", "portfolio"]
     .map((campo) => dados[campo])
@@ -66,23 +72,35 @@ function gerarDocumento(dados) {
     `)
     .join("");
 
-  const formacao = [dados.curso, dados.instituicao, dados["periodo-curso"], dados.conclusao, dados.infoAcademica]
-    .some(Boolean)
-    ? `<article>
-        <h3>${escaparHtml(dados.curso || "Formação acadêmica")}</h3>
-        <p><strong>${escaparHtml(dados.instituicao)}</strong>${dados["periodo-curso"] ? ` | ${escaparHtml(dados["periodo-curso"])}` : ""}${dados.conclusao ? ` | Conclusão: ${escaparHtml(dados.conclusao)}` : ""}</p>
-        ${dados.infoAcademica ? `<p>${textoComQuebras(dados.infoAcademica)}</p>` : ""}
-      </article>`
-    : "";
+  const formacoes = dados.formacoes
+    .filter((formacao) => [
+      formacao.curso,
+      formacao.instituicao,
+      formacao.periodo,
+      formacao.dataConclusao,
+      formacao.previsaoConclusao,
+      formacao.infoAcademica,
+    ].some(Boolean))
+    .map((formacao) => {
+      const data = formacao.concluido
+        ? formacao.dataConclusao && `Conclusão: ${escaparHtml(formacao.dataConclusao)}`
+        : formacao.previsaoConclusao && `Previsão: ${escaparHtml(formacao.previsaoConclusao)}`;
+      return `<article>
+        <h3>${escaparHtml(formacao.curso || "Formação acadêmica")}</h3>
+        <p><strong>${escaparHtml(formacao.instituicao)}</strong>${formacao.periodo ? ` | ${escaparHtml(formacao.periodo)}` : ""}${data ? ` | ${data}` : ""}</p>
+        ${formacao.infoAcademica ? `<p>${textoComQuebras(formacao.infoAcademica)}</p>` : ""}
+      </article>`;
+    })
+    .join("");
 
-  const projeto = [dados.projeto, dados.tecnologias, dados["descricao-projeto"]]
-    .some(Boolean)
-    ? `<article>
-        <h3>${escaparHtml(dados.projeto || "Projeto")}</h3>
-        ${dados.tecnologias ? `<p><strong>Tecnologias:</strong> ${escaparHtml(dados.tecnologias)}</p>` : ""}
-        ${dados["descricao-projeto"] ? `<p>${textoComQuebras(dados["descricao-projeto"])}</p>` : ""}
-      </article>`
-    : "";
+  const projetos = dados.projetos
+    .filter((projeto) => Object.values(projeto).some(Boolean))
+    .map((projeto) => `<article>
+      <h3>${escaparHtml(projeto.projeto || "Projeto")}</h3>
+      ${projeto.tecnologias ? `<p><strong>Tecnologias:</strong> ${escaparHtml(projeto.tecnologias)}</p>` : ""}
+      ${projeto.descricao ? `<p>${textoComQuebras(projeto.descricao)}</p>` : ""}
+    </article>`)
+    .join("");
 
   const paragrafo = (texto) => texto ? `<p>${textoComQuebras(texto)}</p>` : "";
 
@@ -108,14 +126,15 @@ function gerarDocumento(dados) {
     </header>
     ${secao("Resumo profissional", paragrafo(dados.resumo))}
     ${secao("Experiência profissional", experiencias)}
-    ${secao("Formação acadêmica", formacao)}
-    ${secao("Projetos em destaque", projeto)}
+    ${secao("Formação acadêmica", formacoes)}
+    ${secao("Projetos em destaque", projetos)}
     ${secao("Competências", paragrafo(dados.competencias))}
     ${secao("Idiomas", paragrafo(dados.idiomas))}
   </body>
 </html>`;
 }
 
+// Valida os dados enviados antes de gerar o documento para download.
 export async function POST(request) {
   let corpo;
 
@@ -141,27 +160,75 @@ export async function POST(request) {
     return Response.json({ error: "Informe um e-mail válido para gerar o currículo." }, { status: 400 });
   }
 
-  const experiencias = corpo.experiencias ?? [];
-  if (!Array.isArray(experiencias) || experiencias.some((experiencia) => (
-    !experiencia
-    || typeof experiencia !== "object"
-    || Array.isArray(experiencia)
-    || ["empresa", "cargo", "periodo", "responsabilidades"].some(
-      (campo) => experiencia[campo] !== undefined && typeof experiencia[campo] !== "string",
-    )
-  ))) {
-    return Response.json({ error: "As experiências profissionais são inválidas." }, { status: 400 });
+  const listas = [
+    { nome: "experiencias", campos: ["empresa", "cargo", "periodo", "responsabilidades"] },
+    {
+      nome: "formacoes",
+      campos: ["curso", "instituicao", "periodo", "dataConclusao", "previsaoConclusao", "infoAcademica"],
+      booleanos: ["concluido"],
+    },
+    { nome: "projetos", campos: ["projeto", "tecnologias", "descricao"] },
+  ];
+
+  for (const lista of listas) {
+    const registros = corpo[lista.nome] ?? [];
+    const registroInvalido = !Array.isArray(registros) || registros.some((registro) => (
+      !registro
+      || typeof registro !== "object"
+      || Array.isArray(registro)
+      || lista.campos.some((campo) => registro[campo] !== undefined && typeof registro[campo] !== "string")
+      || (lista.booleanos || []).some((campo) => registro[campo] !== undefined && typeof registro[campo] !== "boolean")
+    ));
+
+    if (registroInvalido) {
+      return Response.json({ error: `A lista de ${lista.nome} é inválida.` }, { status: 400 });
+    }
   }
 
+  // Normaliza campos opcionais para simplificar a renderização do documento.
   const dados = Object.fromEntries(camposTexto.map((campo) => [campo, corpo[campo]?.trim() ?? ""]));
-  dados.experiencias = experiencias.map((experiencia) => ({
+  dados.experiencias = (corpo.experiencias ?? []).map((experiencia) => ({
     empresa: experiencia.empresa?.trim() ?? "",
     cargo: experiencia.cargo?.trim() ?? "",
     periodo: experiencia.periodo?.trim() ?? "",
     responsabilidades: experiencia.responsabilidades?.trim() ?? "",
   }));
+  dados.formacoes = (corpo.formacoes ?? (
+    dados.curso || dados.instituicao || dados["periodo-curso"] || dados.conclusao || dados.infoAcademica
+      ? [{
+        curso: dados.curso,
+        instituicao: dados.instituicao,
+        periodo: dados["periodo-curso"],
+        concluido: false,
+        previsaoConclusao: dados.conclusao,
+        infoAcademica: dados.infoAcademica,
+      }]
+      : []
+  )).map((formacao) => ({
+    curso: formacao.curso?.trim() ?? "",
+    instituicao: formacao.instituicao?.trim() ?? "",
+    periodo: formacao.periodo?.trim() ?? "",
+    concluido: formacao.concluido ?? false,
+    dataConclusao: formacao.dataConclusao?.trim() ?? "",
+    previsaoConclusao: formacao.previsaoConclusao?.trim() ?? "",
+    infoAcademica: formacao.infoAcademica?.trim() ?? "",
+  }));
+  dados.projetos = (corpo.projetos ?? (
+    dados.projeto || dados.tecnologias || dados["descricao-projeto"]
+      ? [{
+        projeto: dados.projeto,
+        tecnologias: dados.tecnologias,
+        descricao: dados["descricao-projeto"],
+      }]
+      : []
+  )).map((projeto) => ({
+    projeto: projeto.projeto?.trim() ?? "",
+    tecnologias: projeto.tecnologias?.trim() ?? "",
+    descricao: projeto.descricao?.trim() ?? "",
+  }));
   const documento = gerarDocumento(dados);
 
+  // Entrega o documento como anexo e evita cache de dados pessoais.
   return new Response(documento, {
     headers: {
       "Cache-Control": "no-store",

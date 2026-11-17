@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import styles from "./page.module.css";
 
 // Grupos e campos do formulário definidos como dados para manter a estrutura consistente.
@@ -34,28 +34,6 @@ const grupos = [
     ],
   },
   {
-    id: "formacao",
-    titulo: "Formação acadêmica",
-    descricao: "Inclua cursos, instituições e previsão de conclusão.",
-    campos: [
-      { id: "curso", label: "Curso", placeholder: "Ex.: Design Digital" },
-      { id: "instituicao", label: "Instituição", placeholder: "Nome da instituição" },
-      { id: "periodo-curso", label: "Período atual", placeholder: "Ex.: 5º semestre" },
-      { id: "conclusao", label: "Previsão de conclusão", placeholder: "Ex.: Dez/2026" },
-      { id: "infoAcademica", label: "Informações adicionais", placeholder: "Atividades, certificações ou destaques.", multiline: true, full: true },
-    ],
-  },
-  {
-    id: "projetos",
-    titulo: "Projetos em destaque",
-    descricao: "Apresente trabalhos que mostram como você aplica seus conhecimentos.",
-    campos: [
-      { id: "projeto", label: "Nome do projeto", placeholder: "Nome do projeto" },
-      { id: "tecnologias", label: "Tecnologias", placeholder: "Ex.: Figma, React" },
-      { id: "descricao-projeto", label: "Descrição", placeholder: "Qual era o objetivo e qual foi sua contribuição?", multiline: true, full: true },
-    ],
-  },
-  {
     id: "habilidades",
     titulo: "Competências e idiomas",
     descricao: "Complete seu perfil com outras habilidades relevantes.",
@@ -66,27 +44,41 @@ const grupos = [
   },
 ];
 
+const camposFormacao = [
+  { id: "curso", label: "Curso", placeholder: "Ex.: Design Digital" },
+  { id: "instituicao", label: "Instituição", placeholder: "Nome da instituição" },
+  { id: "periodo", label: "Período cursado", placeholder: "Ex.: 2022 - 2025" },
+  { id: "infoAcademica", label: "Informações adicionais", placeholder: "Atividades, certificações ou destaques.", multiline: true, full: true },
+];
+
+const camposProjeto = [
+  { id: "projeto", label: "Nome do projeto", placeholder: "Nome do projeto" },
+  { id: "tecnologias", label: "Tecnologias", placeholder: "Ex.: Figma, React" },
+  { id: "descricao", label: "Descrição", placeholder: "Qual era o objetivo e qual foi sua contribuição?", multiline: true, full: true },
+];
+
 // Renderiza um campo com rótulo associado e seleciona textarea para respostas longas.
 function Campo({ campo, id = campo.id, name = campo.id, onChange, required = campo.required, value }) {
   // Campos marcados como full ocupam a largura disponível no grid.
   const className = campo.full ? `${styles.field} ${styles.fieldFull}` : styles.field;
   // Propriedades comuns aos controles evitam repetir a mesma configuração no JSX.
   const propriedades = {
-    autoComplete: campo.autocomplete,
     className: campo.multiline ? styles.textarea : styles.input,
     id,
     name,
     onChange,
-    placeholder: campo.placeholder,
     required,
-    type: campo.type || "text",
     value,
   };
 
   return (
     <label className={className} htmlFor={id}>
       <span>{campo.label}</span>
-      {campo.multiline ? <textarea {...propriedades} /> : <input {...propriedades} />}
+      {campo.options
+        ? <select {...propriedades}>{campo.options.map((opcao) => <option key={opcao.value} value={opcao.value}>{opcao.label}</option>)}</select>
+        : campo.multiline
+          ? <textarea {...propriedades} autoComplete={campo.autocomplete} placeholder={campo.placeholder} />
+          : <input {...propriedades} autoComplete={campo.autocomplete} placeholder={campo.placeholder} type={campo.type || "text"} />}
     </label>
   );
 }
@@ -98,6 +90,16 @@ export default function CurriculoPage() {
   const [experiencias, setExperiencias] = useState([
     { id: 0, empresa: "", cargo: "", periodo: "", responsabilidades: "" },
   ]);
+  // Mantém cada formação e projeto em uma lista para permitir incluir e remover entradas.
+  const [formacoes, setFormacoes] = useState([
+    { id: 0, curso: "", instituicao: "", periodo: "", concluido: "nao", dataConclusao: "", previsaoConclusao: "", infoAcademica: "" },
+  ]);
+  const [projetos, setProjetos] = useState([
+    { id: 0, projeto: "", tecnologias: "", descricao: "" },
+  ]);
+  const proximoIdFormacao = useRef(1);
+  const proximoIdProjeto = useRef(1);
+  const proximoIdExperiencia = useRef(1);
 
   function atualizarExperiencia(id, campo, valor) {
     setExperiencias((atuais) => atuais.map((item) => (
@@ -105,23 +107,71 @@ export default function CurriculoPage() {
     )));
   }
 
+  // Atualiza um campo pelo identificador sem modificar a lista original.
+  function atualizarItem(setItens, id, campo, valor) {
+    setItens((atuais) => atuais.map((item) => (
+      item.id === id ? { ...item, [campo]: valor } : item
+    )));
+  }
+
+  function adicionarFormacao() {
+    const id = proximoIdFormacao.current++;
+    setFormacoes((atuais) => [
+      ...atuais,
+      {
+        id,
+        curso: "",
+        instituicao: "",
+        periodo: "",
+        concluido: "nao",
+        dataConclusao: "",
+        previsaoConclusao: "",
+        infoAcademica: "",
+      },
+    ]);
+  }
+
+  function adicionarExperiencia() {
+    const id = proximoIdExperiencia.current++;
+    setExperiencias((atuais) => [
+      ...atuais,
+      { id, empresa: "", cargo: "", periodo: "", responsabilidades: "" },
+    ]);
+  }
+
+  function adicionarProjeto() {
+    const id = proximoIdProjeto.current++;
+    setProjetos((atuais) => [
+      ...atuais,
+      { id, projeto: "", tecnologias: "", descricao: "" },
+    ]);
+  }
+
+  // Salva os grupos repetíveis como listas, omitindo entradas sem conteúdo.
   function salvarCurriculo(event) {
     event.preventDefault();
     const formulario = new FormData(event.currentTarget);
     const dados = {};
 
     formulario.forEach((valor, nome) => {
-      if (!nome.startsWith("experiencias[")) dados[nome] = valor;
+      if (!/^(experiencias|formacoes|projetos)\[/.test(nome)) dados[nome] = valor;
     });
 
-    const experienciasPreenchidas = experiencias
+    const registrosPreenchidos = (itens, ignorar = []) => itens
       .map(({ id, ...dadosExperiencia }) => dadosExperiencia)
-      .filter((experiencia) => Object.values(experiencia).some((valor) => valor.trim()));
+      .filter((item) => Object.entries(item).some(
+        ([campo, valor]) => !ignorar.includes(campo) && valor && valor.trim(),
+      ));
 
     try {
       localStorage.setItem("worclick-curriculo", JSON.stringify({
         ...dados,
-        experiencias: experienciasPreenchidas,
+        experiencias: registrosPreenchidos(experiencias),
+        formacoes: registrosPreenchidos(formacoes, ["concluido"]).map((formacao) => ({
+          ...formacao,
+          concluido: formacao.concluido === "sim",
+        })),
+        projetos: registrosPreenchidos(projetos),
       }));
     } catch {
       setErroSalvar("Não foi possível salvar o currículo neste navegador. Tente novamente.");
@@ -137,7 +187,7 @@ export default function CurriculoPage() {
       <header className={styles.pageHeading}>
         <p className={styles.eyebrow}>Worclick · seu perfil profissional</p>
         <h1 id="curriculo-heading">Formulário para currículo</h1>
-        <p>Preencha os campos essenciais e inclua as experiências que representam sua trajetória antes de salvar.</p>
+        <p>Preencha os campos essenciais e inclua as experiências, formações e projetos que representam sua trajetória.</p>
       </header>
 
       {/* Área principal do formulário, organizada em dados e próxima etapa. */}
@@ -186,16 +236,7 @@ export default function CurriculoPage() {
                   </ol>
                   <button
                     className={styles.addButton}
-                    onClick={() => setExperiencias((atuais) => [
-                      ...atuais,
-                      {
-                        id: atuais.reduce((maiorId, item) => Math.max(maiorId, item.id), 0) + 1,
-                        empresa: "",
-                        cargo: "",
-                        periodo: "",
-                        responsabilidades: "",
-                      },
-                    ])}
+                    onClick={adicionarExperiencia}
                     type="button"
                   >
                     Adicionar nova experiência
@@ -208,6 +249,131 @@ export default function CurriculoPage() {
               )}
             </section>
           ))}
+
+          <section aria-labelledby="titulo-formacao" className={styles.formSection}>
+            <h2 id="titulo-formacao">Formação acadêmica</h2>
+            <p>Adicione cursos e informe se cada formação foi concluída.</p>
+            <ol className={styles.experienceList}>
+              {formacoes.map((formacao, index) => {
+                const preenchida = camposFormacao.some((campo) => formacao[campo.id].trim())
+                  || Boolean(formacao.dataConclusao.trim() || formacao.previsaoConclusao.trim());
+                const campoData = formacao.concluido === "sim"
+                  ? { id: "dataConclusao", label: "Data de conclusão", placeholder: "Ex.: Dez/2025" }
+                  : { id: "previsaoConclusao", label: "Previsão de conclusão", placeholder: "Ex.: Dez/2026" };
+
+                return (
+                  <li key={formacao.id}>
+                    <fieldset className={styles.experienceEntry}>
+                      <legend>Formação {index + 1}</legend>
+                      <Campo
+                        campo={{
+                          id: "concluido",
+                          label: "Curso concluído?",
+                          options: [
+                            { value: "nao", label: "Não, em andamento" },
+                            { value: "sim", label: "Sim, concluído" },
+                          ],
+                        }}
+                        id={`concluido-${formacao.id}`}
+                        name={`formacoes[${index}][concluido]`}
+                        onChange={(event) => atualizarItem(setFormacoes, formacao.id, "concluido", event.target.value)}
+                        value={formacao.concluido}
+                      />
+                      {camposFormacao.slice(0, 3).map((campo) => (
+                        <Campo
+                          campo={campo}
+                          id={`${campo.id}-${formacao.id}`}
+                          key={campo.id}
+                          name={`formacoes[${index}][${campo.id}]`}
+                          onChange={(event) => atualizarItem(setFormacoes, formacao.id, campo.id, event.target.value)}
+                          required={preenchida}
+                          value={formacao[campo.id]}
+                        />
+                      ))}
+                      <Campo
+                        campo={campoData}
+                        id={`${campoData.id}-${formacao.id}`}
+                        name={`formacoes[${index}][${campoData.id}]`}
+                        onChange={(event) => atualizarItem(setFormacoes, formacao.id, campoData.id, event.target.value)}
+                        required={preenchida}
+                        value={formacao[campoData.id]}
+                      />
+                      <Campo
+                        campo={camposFormacao[3]}
+                        id={`infoAcademica-${formacao.id}`}
+                        name={`formacoes[${index}][infoAcademica]`}
+                        onChange={(event) => atualizarItem(setFormacoes, formacao.id, "infoAcademica", event.target.value)}
+                        value={formacao.infoAcademica}
+                      />
+                      {formacoes.length > 1 && (
+                        <button
+                          aria-label={`Remover formação ${index + 1}`}
+                          className={styles.removeButton}
+                          onClick={() => setFormacoes((atuais) => atuais.filter((item) => item.id !== formacao.id))}
+                          type="button"
+                        >
+                          Remover formação
+                        </button>
+                      )}
+                    </fieldset>
+                  </li>
+                );
+              })}
+            </ol>
+            <button
+              className={styles.addButton}
+              onClick={adicionarFormacao}
+              type="button"
+            >
+              Adicionar formação
+            </button>
+          </section>
+
+          <section aria-labelledby="titulo-projetos" className={styles.formSection}>
+            <h2 id="titulo-projetos">Projetos em destaque</h2>
+            <p>Apresente trabalhos que mostram como você aplica seus conhecimentos.</p>
+            <ol className={styles.experienceList}>
+              {projetos.map((projeto, index) => {
+                const preenchido = camposProjeto.some((campo) => projeto[campo.id].trim());
+
+                return (
+                  <li key={projeto.id}>
+                    <fieldset className={styles.experienceEntry}>
+                      <legend>Projeto {index + 1}</legend>
+                      {camposProjeto.map((campo) => (
+                        <Campo
+                          campo={campo}
+                          id={`${campo.id}-${projeto.id}`}
+                          key={campo.id}
+                          name={`projetos[${index}][${campo.id}]`}
+                          onChange={(event) => atualizarItem(setProjetos, projeto.id, campo.id, event.target.value)}
+                          required={preenchido}
+                          value={projeto[campo.id]}
+                        />
+                      ))}
+                      {projetos.length > 1 && (
+                        <button
+                          aria-label={`Remover projeto ${index + 1}`}
+                          className={styles.removeButton}
+                          onClick={() => setProjetos((atuais) => atuais.filter((item) => item.id !== projeto.id))}
+                          type="button"
+                        >
+                          Remover projeto
+                        </button>
+                      )}
+                    </fieldset>
+                  </li>
+                );
+              })}
+            </ol>
+            <button
+              className={styles.addButton}
+              onClick={adicionarProjeto}
+              type="button"
+            >
+              Adicionar projeto
+            </button>
+          </section>
         </section>
 
         {/* Um único currículo é salvo e pode substituir o anterior. */}

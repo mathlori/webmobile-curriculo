@@ -39,6 +39,11 @@
   background: var(--coral-dark);
 }
 
+.primaryButton:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
 .authPage {
   display: grid;
   min-height: 600px;
@@ -137,6 +142,12 @@
   margin-top: 18px;
   color: var(--muted);
   font-size: 12px;
+}
+
+.authAside .authError {
+  color: #a32121;
+  font-size: 13px;
+  font-weight: 650;
 }
 
 .authSwitch a {

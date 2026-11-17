@@ -49,8 +49,29 @@
   font-weight: 650;
 }
 
+.navSecondary {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
 .navSecondary:hover {
   color: #e3f0fc;
+}
+
+.navGreeting {
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.navError {
+  padding: 0 24px 12px;
+  color: white;
+  font-size: 12px;
+  text-align: center;
 }
 
 .navAction {
@@ -92,6 +113,14 @@
 
   .navSecondary {
     font-size: 12px;
+  }
+
+  .navGreeting {
+    max-width: 100px;
+    overflow: hidden;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .navAction {
