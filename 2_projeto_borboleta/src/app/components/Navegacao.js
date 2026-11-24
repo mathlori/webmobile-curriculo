@@ -2,15 +2,26 @@
 
 // Link faz a navegação interna sem recarregar o documento.
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 // Estilos isolados do cabeçalho de navegação.
 import styles from "./Navegacao.module.css";
 
+const rotasCurriculo = {
+  "/curriculo": "/usuario/curriculo",
+  "/curriculo/concluido": "/usuario/curriculo/concluido",
+  "/usuario/curriculo": "/curriculo",
+  "/usuario/curriculo/concluido": "/curriculo/concluido",
+};
+
 // Cabeçalho comum às páginas, com links agrupados em uma lista semântica.
 export default function Nav() {
   const [usuario, setUsuario] = useState(null);
+  const [sessaoVerificada, setSessaoVerificada] = useState(false);
   const [erroSair, setErroSair] = useState("");
   const versaoSessao = useRef(0);
+  const pathname = usePathname();
+  const router = useRouter();
 
   // Consulta a sessão e sincroniza o cabeçalho após login ou logout.
   useEffect(() => {
@@ -19,12 +30,20 @@ export default function Nav() {
     const atualizarUsuario = (evento) => {
       versaoSessao.current += 1;
       setUsuario(evento.detail?.usuario ?? null);
+      setSessaoVerificada(true);
     };
 
     fetch("/api/auth", { cache: "no-store" })
-      .then((resposta) => resposta.ok ? resposta.json() : { usuario: null })
+      .then(async (resposta) => {
+        if (resposta.status === 401) return { usuario: null };
+        if (!resposta.ok) throw new Error("Não foi possível consultar a sessão.");
+        return resposta.json();
+      })
       .then((resultado) => {
-        if (ativo && versaoInicial === versaoSessao.current) setUsuario(resultado.usuario);
+        if (ativo && versaoInicial === versaoSessao.current) {
+          setUsuario(resultado.usuario);
+          setSessaoVerificada(true);
+        }
       })
       .catch(() => {
         if (ativo && versaoInicial === versaoSessao.current) setUsuario(null);
@@ -36,6 +55,15 @@ export default function Nav() {
       window.removeEventListener("worclick-auth-change", atualizarUsuario);
     };
   }, []);
+
+  useEffect(() => {
+    if (!sessaoVerificada) return;
+    const rotaDestino = rotasCurriculo[pathname];
+    if (!rotaDestino) return;
+    const rotaAutenticada = pathname.startsWith("/usuario/");
+    if (Boolean(usuario) === rotaAutenticada) return;
+    router.replace(rotaDestino);
+  }, [pathname, router, sessaoVerificada, usuario]);
 
   async function sair() {
     setErroSair("");
@@ -63,6 +91,7 @@ export default function Nav() {
         <ul className={styles.navLinks}>
           {usuario ? (
             <>
+              <li><Link className={styles.navSecondary} href="/usuario/curriculo">Meu currículo</Link></li>
               <li><span className={styles.navGreeting}>Olá, {usuario.nome}</span></li>
               <li><button className={styles.navSecondary} onClick={sair} type="button">Sair</button></li>
             </>

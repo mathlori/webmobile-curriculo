@@ -41,7 +41,7 @@ export default function Acesso({ modo }) {
       window.dispatchEvent(new CustomEvent("worclick-auth-change", {
         detail: { usuario: resultado.usuario },
       }));
-      router.push("/curriculo");
+      router.push("/usuario/curriculo");
     } catch {
       setErro("Não foi possível conectar ao serviço de acesso. Tente novamente.");
     } finally {

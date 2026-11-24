@@ -38,7 +38,7 @@ A migração parte dos arquivos `index.html`, `style.css` e `script.js` da pasta
 
 O visual também foi aproximado do original: o azul `#0056b3` permanece como cor principal, com fundo cinza-claro, áreas de conteúdo brancas, campos com bordas neutras e rodapé grafite. A home conserva a apresentação do Worclick e exemplos decorativos de currículo. O formulário organiza os campos em grupos temáticos e oferece controles para adicionar e remover experiências, formações e projetos.
 
-O App Router associa a pasta ao endereço: `src/app/sessao/page.js` atende `/sessao`; `src/app/cadastro/page.js` atende `/cadastro`; `src/app/curriculo/page.js` atende `/curriculo`; e `src/app/curriculo/concluido/page.js` atende `/curriculo/concluido`. Os componentes de página são React e a navegação usa `Link`, sem recarregar o documento inteiro.
+O App Router associa a pasta ao endereço: `src/app/sessao/page.js` atende `/sessao`; `src/app/cadastro/page.js` atende `/cadastro`; `src/app/curriculo/page.js` atende `/curriculo`; e `src/app/curriculo/concluido/page.js` atende `/curriculo/concluido`. As páginas em `src/app/usuario/curriculo/` expõem o mesmo fluxo sob `/usuario/curriculo` e `/usuario/curriculo/concluido` para uma sessão ativa. Ambas as versões reutilizam os componentes do currículo, e a navegação usa `Link`, sem recarregar o documento inteiro.
 
 Os formulários de sessão e cadastro validam os dados no navegador e também os enviam à API `/api/auth`. O cadastro adiciona o usuário à lista em memória do servidor; o login só é aceito para uma conta existente com senha correspondente. Após autenticar, a API cria uma sessão e define um cookie HttpOnly. A navegação mostra o nome e a ação para encerrar a sessão enquanto o cookie for válido. No formulário, nome, título profissional, cidade e e-mail são obrigatórios; campos de e-mail e URL também são validados pelo navegador. Ao salvar, os dados do currículo são gravados localmente e a pessoa segue para a conclusão, onde pode baixar o documento Word gerado pela API.
 
@@ -51,22 +51,22 @@ As rotas abaixo representam telas da aplicação ou endpoints da API. Elas não 
 | `/` | Início do site | Apresenta o Worclick e oferece acesso para iniciar uma sessão ou criar um currículo. |
 | `/sessao` | Acesso à conta | Envia e-mail e senha à API e inicia uma sessão quando as credenciais correspondem a um usuário cadastrado. |
 | `/cadastro` | Cadastro | Envia nome, e-mail e senha à API, registra um usuário e inicia uma sessão. |
-| `/curriculo` | Criar currículo | Permite preencher os dados, adicionar ou remover experiências, formações e projetos e salvar o currículo no navegador. |
-| `/curriculo/concluido` | Conclusão | Confirma o salvamento e permite gerar e baixar o currículo em formato Word. |
+| `/curriculo` ou `/usuario/curriculo` | Criar currículo | O endereço padrão é usado sem sessão; com sessão ativa, a navegação usa `/usuario/curriculo`. Permite preencher os dados e salvar o currículo no navegador. |
+| `/curriculo/concluido` ou `/usuario/curriculo/concluido` | Conclusão | Mantém o mesmo prefixo do formulário, confirma o salvamento e permite baixar o currículo em formato Word. |
 | `/api/auth` | Cadastro e sessão | `POST` cadastra ou autentica; `GET` consulta a sessão atual; `DELETE` encerra a sessão. |
 | `/api/gera_curriculo` | API de geração | Recebe os dados do currículo em JSON via `POST` e responde com um documento Word para download. |
 
 O roteador associa cada caminho a uma tela e indica uma tela de não encontrado para caminhos inválidos. Ao acessar diretamente uma dessas rotas, o servidor de hospedagem também deverá entregar a aplicação; caso contrário, a atualização do navegador pode resultar em erro 404.
 
-O login cria uma sessão, mas as páginas do currículo não exigem essa sessão para serem abertas. A autenticação desta etapa não deve ser tratada como autorização para proteger dados ou operações no servidor. Como as URLs não têm parâmetros, dados pessoais não devem ser colocados no caminho.
+O login cria uma sessão e leva ao endereço `/usuario/curriculo`. A navegação consulta a sessão atual e ajusta as rotas do currículo: com sessão ativa, `/curriculo` e `/curriculo/concluido` passam para os endereços equivalentes sob `/usuario`; sem sessão, os endereços com esse prefixo voltam às rotas padrão. As páginas do currículo continuam sem exigir autenticação para serem abertas, portanto essa regra de URL não é proteção de dados nem autorização no servidor. O segmento `usuario` é fixo e nenhum dado pessoal é colocado no caminho.
 
 ## 2. Navegação das telas
 
 1. A pessoa acessa `/` e escolhe acessar uma conta existente ou fazer o cadastro.
-2. Em `/sessao` ou `/cadastro`, envia os campos à API. No cadastro, o servidor cria a conta; no login, confere o e-mail e a senha. Em caso de sucesso, a resposta define o cookie de sessão e a pessoa segue para `/curriculo`.
-3. Em `/curriculo`, preenche dados pessoais e competências, além de adicionar ou remover experiências, formações e projetos. Uma experiência ou projeto parcialmente preenchido exige o preenchimento de todos os seus campos. A formação indica se o curso foi concluído e solicita a data de conclusão ou a previsão correspondente.
+2. Em `/sessao` ou `/cadastro`, envia os campos à API. No cadastro, o servidor cria a conta; no login, confere o e-mail e a senha. Em caso de sucesso, a resposta define o cookie de sessão e a pessoa segue para `/usuario/curriculo`.
+3. Sem sessão, o formulário fica em `/curriculo`; com sessão, fica em `/usuario/curriculo`. A pessoa preenche dados e competências e pode adicionar ou remover experiências, formações e projetos. Uma experiência ou projeto parcialmente preenchido exige o preenchimento de todos os seus campos. A formação indica se o curso foi concluído e solicita a data de conclusão ou a previsão correspondente.
 4. Ao salvar, o formulário grava um único objeto JSON com a chave `worclick-curriculo` em `localStorage`. Os campos obrigatórios e os formatos inválidos são bloqueados pelo navegador; se o armazenamento falhar, uma mensagem de erro é apresentada.
-5. Após o salvamento, a aplicação abre `/curriculo/concluido`. Ao solicitar o download, a página envia os dados salvos à API e inicia o download do documento Word retornado.
+5. Após o salvamento, a aplicação abre a conclusão mantendo o contexto: `/curriculo/concluido` sem sessão ou `/usuario/curriculo/concluido` com sessão. Ao solicitar o download, a página envia os dados salvos à API e inicia o download do documento Word retornado.
 
 O armazenamento é local ao navegador e não equivale a uma conta ou cópia de segurança. Limpar os dados do navegador remove o currículo, e outro dispositivo não tem acesso a ele. Os dados só são enviados à API quando o download é solicitado; o endpoint não os armazena nem sincroniza.
 
@@ -108,8 +108,9 @@ Esse armazenamento em memória é apenas demonstrativo: reiniciar o servidor apa
 - `Navegacao.js` usa `header` e `nav` para identificar a navegação principal, com os links em uma lista `ul`/`li`; as páginas priorizam elementos semânticos do HTML5 em vez de wrappers genéricos.
 - As páginas usam um único `main` como região principal; seções, cabeçalhos, formulários, grupos de campos e listas usam elementos semânticos como `section`, `header`, `form`, `fieldset`, `label`, `ol` e `li`.
 - Cada tela tem seu próprio `page.js`, seguindo a estrutura de pastas do App Router.
-- `Acesso.js` envia cadastro e login à API e comunica a sessão à navegação.
-- `Navegacao.js` consulta a sessão, mostra as opções adequadas e permite sair.
+- `Acesso.js` envia cadastro e login à API, comunica a sessão à navegação e direciona para `/usuario/curriculo`.
+- `Navegacao.js` consulta a sessão, oferece o link para o currículo, sincroniza o prefixo das rotas e permite sair; após sair, o endereço volta ao padrão.
+- `curriculo/Curriculo.js` e `curriculo/concluido/Concluido.js` implementam as telas reutilizadas pelas rotas padrão e autenticadas.
 - `src/lib/db.js` mantém a lista de usuários e sessões em memória durante a execução do servidor.
 - A página de currículo organiza os campos em grupos temáticos e permite gerenciar experiências, formações e projetos repetíveis.
 - A formação apresenta a data de conclusão para cursos concluídos ou a previsão para cursos em andamento.
@@ -138,10 +139,12 @@ Currículos contêm dados pessoais. Os dados permanecem no `localStorage` do nav
 
 ## 7. Verificações desta etapa
 
-- Acessar diretamente `/`, `/sessao`, `/cadastro`, `/curriculo` e `/curriculo/concluido`.
+- Acessar diretamente `/`, `/sessao`, `/cadastro`, `/curriculo`, `/curriculo/concluido`, `/usuario/curriculo` e `/usuario/curriculo/concluido`.
 - Cadastrar um usuário, acessar com as credenciais corretas e confirmar o nome e a ação de saída na navegação.
+- Após entrar, confirmar que o navegador usa `/usuario/curriculo`, que salvar abre `/usuario/curriculo/concluido` e que o link “Meu currículo” mantém esse prefixo.
+- Sem sessão, abrir uma rota com prefixo `/usuario` e confirmar que ela volta ao endereço padrão correspondente; com sessão, abrir `/curriculo` e confirmar a mudança para o endereço com prefixo.
 - Confirmar que login com usuário inexistente ou senha incorreta é rejeitado e que e-mail duplicado não cria outra conta.
-- Encerrar a sessão e confirmar que a navegação volta a oferecer acesso e cadastro.
+- Encerrar a sessão e confirmar que a navegação volta a oferecer acesso e cadastro e que uma rota do currículo autenticada volta ao endereço padrão correspondente.
 - Confirmar que os campos obrigatórios do currículo e do acesso são validados pelo navegador, incluindo formatos inválidos de e-mail e URL.
 - Adicionar e remover experiências, formações e projetos; confirmar que entradas vazias são omitidas e entradas parcialmente preenchidas exigem seus campos.
 - Alternar uma formação entre concluída e em andamento e verificar que o campo de data correspondente muda.
