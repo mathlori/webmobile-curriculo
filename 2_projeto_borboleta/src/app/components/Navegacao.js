@@ -7,12 +7,24 @@ import { useEffect, useRef, useState } from "react";
 // Estilos isolados do cabeçalho de navegação.
 import styles from "./Navegacao.module.css";
 
-const rotasCurriculo = {
-  "/curriculo": "/usuario/curriculo",
-  "/curriculo/concluido": "/usuario/curriculo/concluido",
-  "/usuario/curriculo": "/curriculo",
-  "/usuario/curriculo/concluido": "/curriculo/concluido",
-};
+function rotaCurriculo(usuarioId, sufixo = "") {
+  return usuarioId
+    ? `/user/${encodeURIComponent(usuarioId)}/curriculo${sufixo}`
+    : `/curriculo${sufixo}`;
+}
+
+export function NavegacaoFallback() {
+  return (
+    <header className={styles.siteHeader}>
+      <nav className={styles.nav} aria-label="Navegação principal">
+        <Link className={styles.brand} href="/" aria-label="Worclick, página inicial">
+          <span className={styles.brandMark} aria-hidden="true">W</span>
+          <span>Worclick</span>
+        </Link>
+      </nav>
+    </header>
+  );
+}
 
 // Cabeçalho comum às páginas, com links agrupados em uma lista semântica.
 export default function Nav() {
@@ -58,11 +70,21 @@ export default function Nav() {
 
   useEffect(() => {
     if (!sessaoVerificada) return;
-    const rotaDestino = rotasCurriculo[pathname];
-    if (!rotaDestino) return;
-    const rotaAutenticada = pathname.startsWith("/usuario/");
-    if (Boolean(usuario) === rotaAutenticada) return;
-    router.replace(rotaDestino);
+    const rotaPadrao = pathname.match(/^\/curriculo(\/concluido)?$/);
+    const rotaUsuario = pathname.match(/^\/user\/([^/]+)\/curriculo(\/concluido)?$/);
+    let rotaDestino = null;
+
+    if (rotaPadrao && usuario?.id) {
+      rotaDestino = rotaCurriculo(usuario.id, rotaPadrao[1] || "");
+    } else if (rotaUsuario) {
+      if (!usuario?.id) {
+        rotaDestino = rotaCurriculo(null, rotaUsuario[2] || "");
+      } else if (rotaUsuario[1] !== usuario.id) {
+        rotaDestino = rotaCurriculo(usuario.id, rotaUsuario[2] || "");
+      }
+    }
+
+    if (rotaDestino && rotaDestino !== pathname) router.replace(rotaDestino);
   }, [pathname, router, sessaoVerificada, usuario]);
 
   async function sair() {
@@ -91,7 +113,7 @@ export default function Nav() {
         <ul className={styles.navLinks}>
           {usuario ? (
             <>
-              <li><Link className={styles.navSecondary} href="/usuario/curriculo">Meu currículo</Link></li>
+              <li><Link className={styles.navSecondary} href={rotaCurriculo(usuario.id)}>Meu currículo</Link></li>
               <li><span className={styles.navGreeting}>Olá, {usuario.nome}</span></li>
               <li><button className={styles.navSecondary} onClick={sair} type="button">Sair</button></li>
             </>

@@ -67,7 +67,7 @@ export function buscarUsuarioDaSessao(token) {
   }
 
   const usuario = database.users.find((item) => item.id === sessao.usuarioId);
-  return usuario ? { nome: usuario.nome, email: usuario.email } : null;
+  return usuario ? { id: usuario.id, nome: usuario.nome, email: usuario.email } : null;
 }
 
 // Invalida o token no servidor ao encerrar a sessão.

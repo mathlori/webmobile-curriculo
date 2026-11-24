@@ -83,7 +83,7 @@ export async function POST(request) {
   }
 
   const token = criarSessao(usuario.id);
-  return respostaJson({ usuario: { nome: usuario.nome, email: usuario.email } }, 200, token);
+  return respostaJson({ usuario: { id: usuario.id, nome: usuario.nome, email: usuario.email } }, 200, token);
 }
 
 // Encerra a sessão atual e invalida o cookie no navegador.

@@ -1,7 +1,8 @@
 // Carrega os estilos globais compartilhados por todas as rotas.
 import "./globals.css";
+import { Suspense } from "react";
 // Cabeçalho e links principais compartilhados pelo site.
-import Nav from "./components/Navegacao";
+import Nav, { NavegacaoFallback } from "./components/Navegacao";
 // Rodapé compartilhado pelo site.
 import Footer from "./components/Footer";
 
@@ -16,7 +17,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
       <body>
-        <Nav />
+        <Suspense fallback={<NavegacaoFallback />}>
+          <Nav />
+        </Suspense>
         {children}
         <Footer />
       </body>
